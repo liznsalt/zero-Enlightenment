@@ -120,7 +120,7 @@ public:
 				target.draw(RAtack, states);
 			else
 				target.draw(LAtack, states);
-		}
+		}	
 		else
 		{
 			if (standing)

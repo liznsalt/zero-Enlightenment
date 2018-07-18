@@ -5,7 +5,6 @@ class Monster :
 	public MainPerson
 {
 public:
-	
-
+	Monster();
 
 };

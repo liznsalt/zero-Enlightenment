@@ -99,7 +99,7 @@ private:
 	//怪物和友军
 	Clock updateClock;
 	vector<Monster> monsters;
-	vector<Person> friends;
+	//vector<Person> friends;
 
 	//更换帧率
 	static const Time TIME_PER_FRAME;
@@ -138,6 +138,8 @@ public:
 	void showInventory();
 	void showCastle();
 	void showMap();
+	void showPao();
+	void showCloth();
 
 	void changeAttr(int voice, int hp, int atk);
 

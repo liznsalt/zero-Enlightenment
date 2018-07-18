@@ -9,8 +9,8 @@ Person::Person()
 	ATK = 2;
 	nearATK = 4;
 	//攻击频率要调
-	atack_frame = seconds(1.f / 3.f); 
-	nearatack_frame = seconds(1.f / 10.f);
+	atack_frame = seconds(1.f / 2.f); 
+	nearatack_frame = seconds(1.f / 2.f);
 	timeSinceLastUpdate = tslu = Time::Zero;
 	jump_speed = 500; 
 	speed = 250; 
@@ -32,7 +32,7 @@ Person::Person()
 	m_vertices[2].position = Vector2f(80, 454);
 	m_vertices[3].position = Vector2f(10, 454);
 
-	m_texture.loadFromFile("person/stand.png");
+	m_texture.loadFromFile("person/0.png");
 
 	m_vertices[0].texCoords = Vector2f(0, 0);
 	m_vertices[1].texCoords = Vector2f(709/6.0, 0);
@@ -65,8 +65,8 @@ void Person::remoteAtack()
 		power.load("normal", getPosition().x, getPosition().y, face_to_right ? 1 : -1);
 		Remote.push_back(power);
 	}
-	else
-		atacking = false;
+	//else
+		//atacking = false;
 }
 
 
@@ -89,14 +89,13 @@ void Person::nearAtack()
 	//
 	if (cannearAtack)
 	{
-		cout << "你进行了一次近战攻击\n";
 		atacking = true;
 		nearAtacking();
 	}
 	else
 	{
 		notnearAtacking();
-		atacking = false;
+		//atacking = false;
 	}
 }
 

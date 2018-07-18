@@ -2,10 +2,10 @@
 
 MainPerson::MainPerson() :
 	m_vertices(Quads, 4),
-	RWalk("rightwalk"),
-	LWalk("leftwalk"),
-	RAtack("rightatack"),
-	LAtack("leftatack")
+	RWalk("0_rightwalk"),
+	LWalk("0_leftwalk"),
+	RAtack("0_rightatack"),
+	LAtack("0_leftatack")
 {
 	m_vertices[0].position = Vector2f(10, 330);
 	m_vertices[1].position = Vector2f(80, 330);
@@ -21,28 +21,6 @@ MainPerson::MainPerson() :
 void MainPerson::load(const string & p, float x, float width, float high)
 {
 	move(Vector2f(x - getPosition().x, 0));
-
-	HP = 100;
-	ATK = 3;
-	nearATK = 3;
-	//¹¥»÷ÆµÂÊÒªµ÷
-	atack_frame = seconds(1.f / 5.f);
-	nearatack_frame = seconds(1.f / 10.f);
-	timeSinceLastUpdate = tslu = Time::Zero;
-	jump_speed = 500;
-	speed = 100;
-	drop_speed = 1000;
-	foot_position = 454;
-
-	isMovingLeft = false;
-	isMovingRight = false;
-	isJumping = false;
-	face_to_right = true;
-	standing = true;
-	canAtack = true;
-
-	atacking = false;
-	nearatacking = true;
 
 	m_vertices[0].position = Vector2f(x, 454 - high);
 	m_vertices[1].position = Vector2f(x + width, 454 - high);
@@ -193,7 +171,7 @@ bool MainPerson::atack_to(MainPerson& p, Time dt)
 		}
 		else
 		{
-			atacking = false;
+			//atacking = false;
 			standing = true;
 		}
 	}

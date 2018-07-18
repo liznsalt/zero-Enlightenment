@@ -4,17 +4,17 @@
 Power::Power():
 	speed(500)
 {
-	m_vertices[0].position = Vector2f(10, 400);
-	m_vertices[1].position = Vector2f(20, 400);
-	m_vertices[2].position = Vector2f(20, 410);
-	m_vertices[3].position = Vector2f(10, 410);
+	m_vertices[0].position = Vector2f(10, 365);
+	m_vertices[1].position = Vector2f(20, 365);
+	m_vertices[2].position = Vector2f(20, 395);
+	m_vertices[3].position = Vector2f(10, 395);
 
 	m_texture.loadFromFile("power/normal.png");
 
 	m_vertices[0].texCoords = Vector2f(0, 0);
 	m_vertices[1].texCoords = Vector2f(10, 0);
-	m_vertices[2].texCoords = Vector2f(10, 10);
-	m_vertices[3].texCoords = Vector2f(0, 10);
+	m_vertices[2].texCoords = Vector2f(10, 30);
+	m_vertices[3].texCoords = Vector2f(0, 30);
 }
 
 //!!!!!!!!!!!
@@ -26,8 +26,8 @@ void Power::load(const string& picture, float x,float y, int direction)
 
 	m_vertices[0].position = Vector2f(x,y);
 	m_vertices[1].position = Vector2f(x + 10, y);
-	m_vertices[2].position = Vector2f(x + 10, y+10);
-	m_vertices[3].position = Vector2f(x, y+10);
+	m_vertices[2].position = Vector2f(x + 10, y+30);
+	m_vertices[3].position = Vector2f(x, y+30);
 
 	m_texture.loadFromFile("power/" + picture + ".png");
 
@@ -35,10 +35,10 @@ void Power::load(const string& picture, float x,float y, int direction)
 
 	m_vertices[0].texCoords = Vector2f(0, 0);
 	m_vertices[1].texCoords = Vector2f(10, 0);
-	m_vertices[2].texCoords = Vector2f(10, 10);
-	m_vertices[3].texCoords = Vector2f(0, 10);
+	m_vertices[2].texCoords = Vector2f(10, 30);
+	m_vertices[3].texCoords = Vector2f(0, 30);
 
-	setOrigin(Vector2f(x - 10, y-400));
+	setOrigin(Vector2f(x - 10, y-365));
 }
 
 void Power::update(Time dt)

@@ -19,18 +19,12 @@ Game::Game() :
 	battleleft.setPosition(Vector2f(-2560, 0));
 	backgroungMusic.setVolume(50);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		Monster monster;
-		monster.load("bigcow", 2560 - (rand() % 4) * 80, 70, 124);//70 x 124
+		int a = rand() % 4;
+		monster.load("6", 2560 - (rand() % 4) * 80, 70, 124);//70 x 124
 		monsters.push_back(monster);
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		Person f;
-		f.load("mouse", -10 + (rand() % 4) * 80, 70, 124);//70 x 124
-		f.set(PersonState::Friend);
-		friends.push_back(f);
 	}
 
 	window.setVerticalSyncEnabled(true);
@@ -85,7 +79,7 @@ void Game::update(Time dt)
 		if (fabs(it->getPosition().x - 2560) <= 10)
 			it->changeHP(20);
 		for (auto it1 = it->Remote.begin();
-			it1 != it->Remote.end(); )
+			it1 != it->Remote.end(); it1++)
 		{
 			float x = it1->getPosition().x,
 				y = it1->getPosition().y;
@@ -99,52 +93,8 @@ void Game::update(Time dt)
 				it->harm(Player, it->getATK());
 				continue;
 			}
-
-			auto it2 = friends.begin();
-			for (; it2 != friends.end(); it2++)
-			{
-				if (fabs(it2->getPosition().x - x) < 15
-					&& y >= it2->getPosition().y - 70
-					&& y <= it2->getPosition().y + 70)
-				{
-					it1 = it->Remote.erase(it1);
-					it->harm(*it2, it->getATK());
-					break;
-				}
-			}
-			if (it2 == friends.end())
-				it1++;
 		}
 	}
-
-	//友军
-	for (auto it = friends.begin(); it != friends.end(); it++)
-	{
-		it->update(dt);
-		if (fabs(it->getPosition().x) <= 10)
-			it->changeHP(20);
-		for (auto it1 = it->Remote.begin();
-			it1 != it->Remote.end(); )
-		{
-			auto it2 = monsters.begin();
-			for (; it2 != monsters.end(); it2++)
-			{
-				float x = it1->getPosition().x,
-					y = it1->getPosition().y;
-				if (fabs(it2->getPosition().x - x) < 15
-					&& y >= it2->getPosition().y - 70
-					&& y <= it2->getPosition().y + 70)
-				{
-					it1 = it->Remote.erase(it1);
-					it->harm(*it2, it->getATK());
-					break;
-				}
-			}
-			if (it2 == monsters.end())
-				it1++;
-		}
-	}
-
 
 
 	//处理近战攻击
@@ -167,20 +117,8 @@ void Game::update(Time dt)
 		if (!it->isAlive())
 		{
 			it = monsters.erase(it);
+			Player.money += 10;
 			cout << "有只怪物死了\n";
-		}
-		else
-			it++;
-	}
-
-	//清除死亡的友军
-	for (auto it = friends.begin(); it != friends.end();)
-	{
-		it->update(dt);
-		if (!it->isAlive())
-		{
-			it = friends.erase(it);
-			cout << "有个友军死了\n";
 		}
 		else
 			it++;
@@ -225,38 +163,28 @@ void Game::MOBA()
 		window.setView(BattleView);
 		render();
 		window.display();
+
+		//cout << Player.getPosition().x << endl;
 	}
 }
 
 //游戏AI
 void Game::AI()
 {
-	while (monsters.size() < 3)
+	while (monsters.size() < 1)
 	{
 		Monster monster;
-		monster.load("bigcow", 2560 - (rand() % 4) * 80, 70, 124);//70 x 124
+		int a = rand() % 4;
+		monster.load("6", 2560 - (rand() % 4) * 80, 70, 124);//70 x 124
 		monsters.push_back(monster);
-	}
-	while (friends.size()<3)
-	{
-		Person f;
-		f.load("mouse", -10 + (rand() % 4) * 80, 70, 124);//70 x 124
-		friends.push_back(f);
 	}
 
 
 	//
 	for (auto it1 = monsters.begin(); it1 != monsters.end(); it1++)
 	{
-		for (auto it2 = friends.begin(); it2 != friends.end(); it2++)
-			it1->atack_to(*it2, TIME_PER_FRAME);
+			it1->atack_to(Player, TIME_PER_FRAME);
 	}
-	for (auto it1 = friends.begin(); it1 != friends.end(); it1++)
-	{
-		for (auto it2 = monsters.begin(); it2 != monsters.end(); it2++)
-			it1->atack_to(*it2, TIME_PER_FRAME);
-	}
-
 	//
 }
 
@@ -269,12 +197,10 @@ void Game::render()
 	window.draw(battleleft);
 
 	//画出怪物
-	for (auto it = monsters.begin(); it != monsters.end();it++)
+	for (auto it = monsters.begin(); it != monsters.end(); it++)
+	{
 		window.draw(*it);
-
-	//画出友军
-	for (auto it = friends.begin(); it != friends.end(); it++)
-		window.draw(*it);
+	}
 
 	//画出人物和攻击
 	window.draw(Player);
@@ -299,6 +225,7 @@ void Game::render()
 	attr += to_string(Player.getnearATK());
 	attr += "  Lv:";
 	attr += to_string(level);
+	attr += "  Money:" + to_string(Player.money);
 	text.setString(attr);
 	text.setFillColor(Color::Black);
 	text.setCharacterSize(15);
@@ -309,7 +236,8 @@ void Game::render()
 	head.setPosition(Vector2f(Player.getPosition().x-320, 0));
 	window.draw(head);
 
-	//attribute技能栏
+	//公告、活动
+
 
 	//启示
 
@@ -323,8 +251,6 @@ void Game::render()
 	for (auto it = p.begin(); it != p.end(); it++)
 		window.draw(*it);
 	for (auto it = monsters.begin(); it != monsters.end(); it++)
-		window.draw(*it);
-	for (auto it = friends.begin(); it != friends.end(); it++)
 		window.draw(*it);
 
 }
@@ -440,7 +366,7 @@ void Game::chapter(int i)
 
 void Game::chapter1()
 {
-	plotstate == PlotState::CHAPTER1;
+	plotstate = PlotState::CHAPTER1;
 
 	Scenes plot;
 	plot.load("chapter1");
@@ -834,12 +760,11 @@ void Game::showInventory()
 	Prop a[4];
 	a[0].set("God Blood", "HP+10",100);
 	a[1].set("God Arm", "ATK+10", 100);
-	Button b[4];
+	Button b[5];
 	b[0].set(206, 62, 297, 108);
 	b[1].set(350, 65, 440, 112);
 	b[2].set(517, 429, 585, 462);
 	b[3].set(591, 26, 617, 46);
-
 	while (window.isOpen())
 	{
 		Event event;
@@ -919,6 +844,83 @@ void Game::showMap()
 
 
 }
+
+//炮
+void Game::showPao()
+{
+	cout << "打开炮台\n";
+
+
+}
+
+//换装
+void Game::showCloth()
+{
+	cout << "换装" << endl;
+
+	Scenes inventory;
+	inventory.load("cloth", 640, 512);
+	inventory.setPosition(Vector2f(Player.getPosition().x - 320, 0));
+
+	int state = -1;
+	Button b[6];
+	b[0].set(135,147,273,222);
+	b[1].set(375,148,516,223);
+	b[2].set(134,265,273,334);
+	b[3].set(373,268,517,338);
+	b[4].set(490, 415, 572, 457);
+	b[5].set(591, 27, 617, 48);
+
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+
+			if (event.type == Event::KeyPressed)
+				if (event.key.code == Keyboard::Escape)
+					MOBA();
+
+			if (Mouse::isButtonPressed(Mouse::Left))
+			{
+				Vector2i localPosition = Mouse::getPosition(window);
+				int x = localPosition.x, y = localPosition.y;
+
+				if (b[5].ispressed(localPosition))
+					MOBA();
+
+				for (int i = 0; i < 4; i++)
+					if (b[i].ispressed(localPosition))
+						state = i;
+
+				if (b[4].ispressed(localPosition) && state != -1)
+				{
+					cout << "换装成功!" << endl;
+					Player.load(to_string(state), Player.getPosition().x, 70, 124);
+				}
+				//cout << x << ' ' << y << endl;
+			}
+		}
+		//
+
+		//cout << store.getPosition().x << endl;
+		window.setView(BattleView);
+		window.draw(inventory);
+
+		//文字
+
+		window.display();
+	}
+
+}
+
+
+
+/**************************************************************/
+/**************************************************************/
+
 
 
 //帮助界面
@@ -1700,14 +1702,35 @@ void Game::handlePlayerInput(Keyboard::Key key, bool isPressed, Person& p)
 		break;
 
 	case Keyboard::F:
-		//打开商店
+		//打开..
 		if (isPressed)
 			if (gamestate == GameState::FIGHT)
 			{
-				if (Player.getPosition().x < -1050 && Player.getPosition().x >= -1250)
+				if (Player.getPosition().x < -1050 && 
+					Player.getPosition().x >= -1250)
 				{
 					showStore();
 				}
+				else if (Player.getPosition().x < -1950 && 
+					Player.getPosition().x >= -2200)
+				{
+					showCastle();
+				}
+				else if (Player.getPosition().x < 120 &&
+					Player.getPosition().x >= 0)
+				{
+					showPao();
+				}
+				//
+			}
+		break;
+
+	case Keyboard::O:
+		//打开背包
+		if (isPressed)
+			if (gamestate == GameState::FIGHT)
+			{
+				showCloth();
 			}
 		break;
 
@@ -1820,4 +1843,3 @@ void Game::handlePlayerInput(Keyboard::Key key, bool isPressed, Person& p)
 		break;
 	}
 }
-

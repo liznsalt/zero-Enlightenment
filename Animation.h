@@ -24,7 +24,8 @@ private:
 
 private:
 	float x1, x2, y1, y2;
-	Time frame;
+	int mCurrentFrame, mNumFrames;
+	Time frame, mElapseTime, mDuration;
 	VertexArray m_vertices;
 	Texture m_texture;
 };
